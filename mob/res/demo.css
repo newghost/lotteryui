@@ -1,0 +1,47 @@
+#pdus li {
+  border-bottom: 1px dashed #333;
+  color: #000;
+  display: block;
+  height: 100%;
+  padding: 1.4em 1em;
+  text-decoration: none;
+  width: 100%;
+}
+
+#pdus li.selected {
+  background-color: #ff0;
+}
+
+#frlogin {
+  margin: 20px;
+}
+
+#discovery .header {
+  height: 68px;
+}
+
+#discovery .body {
+  margin-top: 70px;
+}
+
+#linechart {
+  height: 200px;
+  margin: -5px 0 0 -30px;
+}
+
+#linechart .tips-container {
+  display: none;
+}
+
+#linechart .value-label {
+  display: block;
+  font-size: 10px;
+  margin-left: 39px;
+}
+
+.dashboard h3 {
+  background-color: #0000FF;
+  color: #FFFFFF;
+  font-size: 14px;
+  padding: 10px;
+}

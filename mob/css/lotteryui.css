@@ -1,0 +1,403 @@
+* { 
+  margin: 0; 
+  padding: 0; 
+}
+
+body { 
+  background: #ddd;
+  font: 14px/1.4 Georgia, Serif;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* 
+Generic Styling, for Desktops/Laptops 
+*/
+table { 
+  width: 100%; 
+  border-collapse: collapse; 
+}
+
+/* Zebra striping */
+tr:nth-of-type(odd) { 
+  background: #eee; 
+}
+
+th { 
+  background: #333; 
+  color: white; 
+  font-weight: bold; 
+}
+
+td, th { 
+  padding: 6px; 
+  border: 1px solid #ccc; 
+  text-align: left; 
+}
+
+h1 {
+  padding: 0 10px;
+}
+
+button, input, label, select {
+  border: medium none;
+  display: block;
+  font-size: 18px;
+  margin: 20px 0;
+  padding: 10px 0;
+  width: 100%;
+}
+
+label {
+  text-align: left;
+}
+
+ul {
+  list-style: none outside none;
+}
+
+.hide {
+  display: none;
+}
+
+/* 
+Max width before this PARTICULAR table gets nasty
+This query will take effect for any screen smaller than 760px
+and also iPads specifically.
+*/
+@media 
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)  {
+
+}
+
+/* Smartphones (portrait and landscape) ----------- */
+@media only screen
+and (min-device-width : 320px)
+and (max-device-width : 480px) {
+  body { 
+    padding: 0; 
+    margin: 0; 
+    width: 320px;
+  }
+  td, th {
+    font-size: 50%;
+  }
+}
+
+/* iPads (portrait and landscape) ----------- */
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+  body { 
+    width: 495px; 
+  }
+}
+
+/* Loading */
+@-webkit-keyframes rotatation {
+  from {
+    -webkit-transform: rotate(0deg); 
+    -moz-transform: rotate(0deg); 
+    -o-transform: rotate(0deg);
+    -ms-transform: rotate(0deg); 
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+  }
+}
+
+@keyframes rotatation {
+  from {
+    -webkit-transform: rotate(0deg); 
+    -moz-transform: rotate(0deg); 
+    -o-transform: rotate(0deg);
+    -ms-transform: rotate(0deg); 
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+  }
+}
+
+.loading {
+  -webkit-animation-duration:         3s;
+  -webkit-animation-name:             rotatation;
+  -webkit-animation-iteration-count:  infinite;
+  -webkit-animation-timing-function:  linear;
+
+  animation-duration:         3s;
+  animation-name:             rotatation;
+  animation-iteration-count:  infinite;
+  animation-timing-function:  linear;
+}
+
+.loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAMAAABHPGVmAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRFU6fW////7vtARwAAAAJ0Uk5T/wDltzBKAAABIklEQVR42uyaSxLDMAhD8f0v3UW76EwNRTI4cUZeO7zJByxBbGxYJoggme2f1Qixr9UFMSMpd4OYsRRBzoA4USohbpxCiB9oC+RPMgZs5MFHkPAWobebY0xuEvuELPXlLULeG9AUqkkGQToh3PF3SwglSWCIn3G0xjD3Gkr0IRBCiSIFsgDTK7jdhyx/IoggeQjnOCEI6ziTDtmWzGCyUlZDpqFsSa5fA5mHEkSQXsjoSpMmiJ+MlQUygFD6FyyQnP7NS8mWU+qnyyAhIYggDIQsMEB7kK2VC+3BJh+/A0KexFhvRRBBDoeMRBM9mmsUZHzV1GEkGUvzk0hM5iZB2fags5WaeoAnoyamghwOec6PGHv+W6FNMiy4GZP8HOvwEmAAX8gf6WEC3ZoAAAAASUVORK5CYII=");
+  display: block;
+  height: 100px;
+  margin: 100px auto 0;
+  width: 100px;
+}
+
+
+
+#lottery {
+  overflow-x: hidden;
+  overflow-y: auto;
+  width: 100%;
+}
+
+#lottery > ul {
+  width: 20000px;
+  position: relative;
+}
+
+#lottery > ul > li {
+  float: left;
+  margin: 0 0 70px;
+  padding: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+#lottery .footer {
+  display: none;
+}
+
+#lottery .selected .footer {
+  display: block;
+  z-index: 994;
+}
+
+.header ,
+.footer {
+  background-color: #000;
+  bottom: 0;
+  height: 64px;
+  padding: 3px 0 0;
+  position: fixed;
+  text-align: center;
+  width: 102%;
+  left: -4px;
+  z-index: 900;
+}
+
+/*
+.footer {
+  left: auto;
+  width: 100%;
+}
+*/
+
+.footer a {
+  color: #fff;
+}
+
+.footer .icon:before {
+  font-size: 48px;
+  left: 10px;
+  line-height: 62px;
+  position: absolute;
+  text-align: center;
+  top: -10px;
+}
+
+.footer a {
+  color: #A7A7A7;
+  display: inline-block;
+  font-family: Helvetica,Arial,sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  height: 60px;
+  line-height: 100px;
+  margin: 0 4px;
+  overflow: hidden;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  width: 62px;
+}
+
+.footer a:active, .footer a:focus, .footer a:active:focus, .footer .selected {
+  color: #fff !important;
+}
+
+.header {
+  bottom: auto;
+  color: #FFFFFF;
+  height: 32px;
+  padding-top: 8px;
+  top: 0;
+}
+
+.header a {
+  color: #ddd;
+  text-decoration: none;
+}
+
+.header a.icon:before {
+  font-size: 32px;
+  top: 6px;
+}
+
+.header a.selected {
+  color: #ff0;
+}
+
+.header a.back {
+  float: left;
+}
+
+.header a.home {
+  float: right;
+  margin-right: 5px;
+}
+
+.leftlabel {
+  float: left;
+  font-size: 20px;
+  font-weight: 700;
+  text-indent: 10px;
+  width: auto;
+}
+
+.leftinput {
+  display: block;
+  margin: 0 16px 0 140px;
+}
+
+.oneinput {
+  width: 100%;
+}
+
+.oneinput input {
+  border-radius: 4px;
+  margin: 10px auto;
+  width: 94%;
+}
+
+.oneinput[data-hint]:after {
+  display: block;
+  margin: 0 3%;
+  padding: 8px 0;
+  width: 94%;
+}
+
+.body {
+  margin: 40px 0 70px;
+  overflow: hidden;
+}
+
+.bodyb {
+  margin: 40px 0 0;
+  overflow: hidden;
+}
+
+
+#main {
+  text-align: center;
+}
+
+/*
+#outlets {
+  margin-right: -20px;
+  width: 90%;
+}
+*/
+
+
+
+.mulsel li {
+  border-top: 1px dashed #333;
+  color: #000000;
+  padding: 1em;
+}
+
+.mulsel li.selected {
+  background-color: #ff0;
+}
+
+.mulsel .tool {
+  padding: 10px 30px 20px 10px;
+}
+
+.mask {
+  background: none repeat scroll 0 0 #000;
+  bottom: -2%;
+  left: -2%;
+  opacity: 0.3;
+  position: fixed;
+  right: -2%;
+  text-align: center;
+  top: -2%;
+  z-index: 1000;
+}
+
+.dialog {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 1000;
+}
+
+.msg {
+  background: #fff;
+  position: fixed;
+  left: 20px;
+  right: 20px;
+  top: 40px;
+  z-index: 1100;
+}
+
+.msg > h3{
+  background: #000;
+  color: #fff;
+  padding: 4px 10px;
+}
+
+.msg .msgb {
+  min-height: 60px;
+  padding: 10px;
+}
+
+.msg .msgf {
+  border: none;
+  width: 100%;
+}
+
+.msg .msgf td {
+  border: solid 1px #000;
+}
+
+.msg .msgf button {
+  border:none;
+  background: #fff;
+  padding: 0;
+}
+
+.menubar > li > a {
+  background-color: #00f;
+  color: #fff;
+}
+
+.menubar li > a {
+  border-bottom: 1px solid #000000;
+  display: block;
+  padding: 12px 0;
+  text-decoration: none;
+  text-indent: 12px;
+}
+
+.menubar > li > ul {
+  display: none;
+}
+
+.menubar > li.expand > ul {
+  display: block;
+}
