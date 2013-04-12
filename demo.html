@@ -1,0 +1,110 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<title>::DEMO::</title>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8"> 
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<link rel="stylesheet" type="text/css" href="css/lotteryui.css" />
+<link rel="stylesheet" type="text/css" href="css/icons.css" /> 
+<link rel="stylesheet" type="text/css" href="css/hint.css" />
+<link rel="stylesheet" type="text/css" href="res/demo.css" />
+</head>
+<body>
+
+<div id="mobUi">
+  <div class="header">
+    <div class="lotery-nav">
+      <a href="javascript:history.back()" class="icon left back">Back</a>
+      <!--Preload sliders -->
+      <a href="#login" class="icon user selected"></a>
+      <a href="#settings" class="icon tools"></a>
+      <!--New sliders need loaded by ajax -->
+      <a href="#table" class="icon cloud" data-url="res/table.html"></a>
+      <a href="#list"  class="icon stack" data-url="res/list.html"></a>
+      <!-- <a href="#home" class="icon home">Home</a> -->
+    </div>
+  </div>
+
+  <div class="bodyb">
+    <div id="lottery">
+      <ul>
+        <li id="lot-login" class="selected">
+          <!-- First Slider's Content -->
+          <form id="frlogin">
+            <label for="username">Username</label>
+            <input type="text" name="username" id="username" />
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" />
+          </form>
+          <div class="footer">
+            <a id="btnlogin" href="#" class="icon user">Login</a>
+          </div>
+        </li>
+        <li id="lot-settings">
+          <!-- Second Slider's Content -->
+          <ul class="menubar">
+            <li class="expand">
+              <a href="#" class="">User Administration</a>
+              <ul>
+                <li>
+                  <a href="#settings/psw" data-url="res/psw.html">Change Password</a>
+                </li>
+                <li>
+                  <a href="#settings/users" data-url="res/users.html">Users</a>
+                </li>
+                <li>
+                  <a href="#settings/roles" data-url="res/roles.html">Roles</a>
+                </li>
+              </ul>
+            </li>
+            <li class="expand">
+              <a href="#" class="">User List</a>
+              <ul>
+                <li>
+                  <a href="#settings/psw" data-url="res/psw.html">Change Password</a>
+                </li>
+                <li>
+                  <a href="#settings/users" data-url="res/users.html">Users</a>
+                </li>
+                <li>
+                  <a href="#settings/roles" data-url="res/roles.html">Roles</a>
+                </li>
+              </ul>
+            </li>
+            <li class="expand">
+              <a href="#" class="">Roles List</a>
+              <ul>
+                <li>
+                  <a href="#settings/psw" data-url="res/psw.html">Change Password</a>
+                </li>
+                <li>
+                  <a href="#settings/users" data-url="res/users.html">Users</a>
+                </li>
+                <li>
+                  <a href="#settings/roles" data-url="res/roles.html">Roles</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<div class="dialog hide" id="loading">
+  <div class="loading"></div>
+  <div class="mask"></div>
+</div>
+
+<!--
+<script type="text/javascript" src="js/zepto.js"></script>
+-->
+<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="js/lotteryui.js"></script>
+<script type="text/javascript" src="res/demo.js"></script>
+</body>
+</html>
