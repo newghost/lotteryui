@@ -6,8 +6,11 @@
 * https://github.com/newghost/lotteryui.git
 */
 
-//Compative with zepto
+//Compatible with zepto
 var jQuery  = jQuery || Zepto;
+
+//Shortcuts
+var define = Object.defineProperty;
 
 /*
 Plugin: Hash Change Event for Zepto / jQuery
@@ -71,6 +74,14 @@ Public method
     window.MOUSEDOWN = "touchstart";
     window.CLICK     = "tap";
   }
+
+  //debug info
+  window.console   = {
+    log: function() {
+	  //$(".lot-nav").append(Array.prototype.join.call(arguments) + ', ');
+    }
+  };
+
 })(window);
 
 
@@ -100,23 +111,19 @@ var Lottery = (function() {
   var index = function(hash) {
     //Remove prefix "#", if it has
     hash = hash.charAt(0) == "#" ? hash.substr(1) : hash;
-
-    //Zepto will throw error without ...
-    if (/^[\w-]+$/g.test(hash)) {
-      hash = "#lot-" + hash;
-      return $(hash).index();
-    } else {
-      return -1;
-    }
+    hash = "#lot-" + hash;
+    //This expression is not stable on Android 2.2: /^[\w-]+$/g.test(hash)
+    return $(hash).index();
   };
 
   var mvto  = function(idx, callback) {
     if (idx.constructor == String) idx = index(idx);
     if (idx.constructor != Number || idx < 0) return;
 
-    $("#lottery>ul>li").removeClass("selected");
     lottery.running = true;
     clearInterval(timer);
+
+    $("#lottery>ul>li").removeClass("selected");
 
     var tarPos = (0 - idx) * itemWidth;
 
@@ -140,9 +147,9 @@ var Lottery = (function() {
   };
 
   var stop = function(idx, callback) {
-    clearInterval(timer);
-    timer = null;
     lottery.running = false;
+    clearInterval(timer);
+
     curPos = (0 - idx) * itemWidth;
     curIdx = idx;
 
@@ -181,6 +188,18 @@ var Lottery = (function() {
 
   lottery.running = false;
 
+  define(lottery, "running", {
+    get: function() {
+      return this._running;
+    }
+    , set: function(value) {
+      var $container = $(document.body);
+      value
+        ? $container.addClass("lot-running")
+        : $container.removeClass("lot-running");
+    }
+  });
+
   lottery.init    = init;
   lottery.index   = index;
   lottery.resize  = resize;
@@ -198,24 +217,9 @@ Navigation buttons: swap page
 var Nav = (function() {
   var nav = {};
 
-  var $navbtns = $(".lotery-nav a"),
-      $loading = $("#loading");
-
-  $navbtns.mousedown(function(e) {
-    var $this = $(this);
-
-    select($this);
-  });
-
-  //Reset the height of lottery
-  var update = function(height) {
-    var $selected = $("#lottery>ul>li.selected"),
-        $body     = $(".bodyb, .body, .bodyt");
-
-    height
-      ? $body.height(height)
-      : ($selected.size() && $body.height($selected.height() + 70));
-  };
+  var $navbtns = $(".lot-nav a"),
+      $loading = $("#lot-loading"),
+      clickTimer;
 
   //load new content to slide
   var load = function(hash, url) {
@@ -226,25 +230,23 @@ var Nav = (function() {
     nav.loading = true;
     $.get(url, function(html) {
       Lottery.add(hash, html);
-      //Content is loaded after lottery stopped, need to update the height due to different content
-      !Lottery.running && update();
+      //Lottery.mvto(hash);
       nav.loading = false;
     });
-
-    //After add, switch lottery.
-    update("auto");
-    Lottery.mvto(hash, update);
   };
 
   //Selected at the NavBar, lottery will triggered by hashchanged
   var select = function($navbtn) {
-    //will used as id, so need to remove special characters.
-    var hash = $navbtn.attr("href").replace(/[^\w-]/g, '_');
 
-    if (hash) {
+    if ($navbtn && $navbtn.size() && $navbtn.attr("href")) {
+      //will used as id, so need to remove special characters.
+      var hash = $navbtn.attr("href").replace(/[^\w-]/g, '');
+
       //Load new content into slider?
       var url = $navbtn.attr("data-url");
       url && load(hash, url);
+
+      //Switch lottery.
       Lottery.mvto(hash);
 
       $navbtns.removeClass("selected");
@@ -256,9 +258,6 @@ var Nav = (function() {
   var change = function() {
     var hash = location.hash;
 
-    update("auto");
-    Lottery.mvto(hash, update);
-
     $navbtns.each(function() {
       var $this = $(this);
       if ($this.attr("href") == hash) {
@@ -267,39 +266,52 @@ var Nav = (function() {
     });
   };
 
-  //Bind nav functions on links
+  //Bind nav functions on links: Click
   var bind = function(selector) {
     $(selector).click(function(e) {
-      var $this = $(this);
-      var hash = $this.attr("href") || "";
+      if (clickTimer) return;
 
-      hash && (hash.charAt(0) == '#') && select($this);
+      clickTimer = window.setTimeout(function() {
+        select($(this));
+        clickTimer = null;
+      }, 100);
     });
   };
 
+  //Bind nav functions on navigation: Mousedown
+  $navbtns.mousedown(function(e) {
+    //prevent click too fast.
+    if (clickTimer) return;
+
+    clickTimer = window.setTimeout(function() {
+      select($(this));
+      clickTimer = null;
+    }, 100);
+  });
+
   //Property, support IE9+
-  Object.defineProperty(nav, 'loading', {
-    set: function(value) {
+  define(nav, 'loading', {
+    get: function() {
+      return this._loading;
+    }
+    , set: function(value) {
       value
         ? $loading.show()
         : $loading.hide();
+
+      this._loading = value;
     }
   });
 
   //On hash change
   $(window).hashchange(change);
   $(window).hashchange();
-  //On size changed, update the height, 
-  $(window).resize(update);
-  //fire by default
-  update();
 
   //Public Method
   nav.select  = select;
   nav.bind    = bind;
   nav.load    = load;
   nav.change  = change;
-  nav.update  = update;   //update height of layout
 
   return nav;
 }());
