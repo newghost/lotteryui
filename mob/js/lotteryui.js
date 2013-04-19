@@ -270,9 +270,9 @@ var Nav = (function() {
   var bind = function(selector) {
     $(selector).click(function(e) {
       if (clickTimer) return;
-
+      var $this = $(this);
       clickTimer = window.setTimeout(function() {
-        select($(this));
+        select($this);
         clickTimer = null;
       }, 100);
     });
@@ -282,9 +282,9 @@ var Nav = (function() {
   $navbtns.mousedown(function(e) {
     //prevent click too fast.
     if (clickTimer) return;
-
+    var $this = $(this);
     clickTimer = window.setTimeout(function() {
-      select($(this));
+      select($this);
       clickTimer = null;
     }, 100);
   });
