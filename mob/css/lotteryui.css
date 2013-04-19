@@ -160,6 +160,16 @@ and (max-device-width : 480px) {
   overflow: hidden;
 }
 
+#lottery .footer {
+  display: none;
+}
+
+#lottery .selected .footer {
+  display: block;
+  z-index: 994;
+}
+
+/* Only show select slide */
 #lottery > ul > li > * {
   display: none;
 }
@@ -168,17 +178,13 @@ and (max-device-width : 480px) {
   display: block;
 }
 
+/* When running show all the sliders, except footer */
 .lot-running #lottery > ul > li > * {
   display: block;
 }
 
-#lottery .footer {
+.lot-running #lottery > ul > li .footer {
   display: none;
-}
-
-#lottery .selected .footer {
-  display: block;
-  z-index: 994;
 }
 
 .lot-ui .header ,
