@@ -74,6 +74,14 @@ Public method
     window.MOUSEDOWN = "touchstart";
     window.CLICK     = "tap";
   }
+
+  //debug info
+  window.console   = {
+    log: function() {
+	  //$(".lot-nav").append(Array.prototype.join.call(arguments) + ', ');
+    }
+  };
+
 })(window);
 
 
@@ -103,23 +111,19 @@ var Lottery = (function() {
   var index = function(hash) {
     //Remove prefix "#", if it has
     hash = hash.charAt(0) == "#" ? hash.substr(1) : hash;
-
-    //Zepto will throw error without ...
-    if (/^[\w-]+$/g.test(hash)) {
-      hash = "#lot-" + hash;
-      return $(hash).index();
-    } else {
-      return -1;
-    }
+    hash = "#lot-" + hash;
+    //This expression is not stable on Android 2.2: /^[\w-]+$/g.test(hash)
+    return $(hash).index();
   };
 
   var mvto  = function(idx, callback) {
     if (idx.constructor == String) idx = index(idx);
     if (idx.constructor != Number || idx < 0) return;
 
-    $("#lottery>ul>li").removeClass("selected");
     lottery.running = true;
     clearInterval(timer);
+
+    $("#lottery>ul>li").removeClass("selected");
 
     var tarPos = (0 - idx) * itemWidth;
 
@@ -143,9 +147,9 @@ var Lottery = (function() {
   };
 
   var stop = function(idx, callback) {
-    clearInterval(timer);
-    timer = null;
     lottery.running = false;
+    clearInterval(timer);
+
     curPos = (0 - idx) * itemWidth;
     curIdx = idx;
 
@@ -217,29 +221,6 @@ var Nav = (function() {
       $loading = $("#lot-loading"),
       clickTimer;
 
-  $navbtns.mousedown(function(e) {
-    //prevent click too fast.
-    if (clickTimer) return;
-    clickTimer = window.setTimeout(function() {
-      select($(this));
-      clickTimer = null;
-    }, 100);
-  });
-
-  //Reset the height of lottery
-  var update = function(height) {
-    //overlaps when layout inner become bigger.
-    window.scroll(0, 0);
-    return;
-
-    var $selected = $("#lottery>ul>li.selected"),
-        $body     = $(".bodyb, .body, .bodyt");
-
-    height
-      ? $body.height(height)
-      : ($selected.size() && $body.height($selected.height() + 70));
-  };
-
   //load new content to slide
   var load = function(hash, url) {
     //Pre add, so can go
@@ -249,8 +230,7 @@ var Nav = (function() {
     nav.loading = true;
     $.get(url, function(html) {
       Lottery.add(hash, html);
-      //Content is loaded after lottery stopped, need to update the height due to different content
-      !Lottery.running && update();
+      //Lottery.mvto(hash);
       nav.loading = false;
     });
   };
@@ -267,8 +247,7 @@ var Nav = (function() {
       url && load(hash, url);
 
       //Switch lottery.
-      update("auto");
-      Lottery.mvto(hash, update);
+      Lottery.mvto(hash);
 
       $navbtns.removeClass("selected");
       $navbtn.addClass("selected");
@@ -287,12 +266,28 @@ var Nav = (function() {
     });
   };
 
-  //Bind nav functions on links
+  //Bind nav functions on links: Click
   var bind = function(selector) {
     $(selector).click(function(e) {
-      select($(this));
+      if (clickTimer) return;
+
+      clickTimer = window.setTimeout(function() {
+        select($(this));
+        clickTimer = null;
+      }, 100);
     });
   };
+
+  //Bind nav functions on navigation: Mousedown
+  $navbtns.mousedown(function(e) {
+    //prevent click too fast.
+    if (clickTimer) return;
+
+    clickTimer = window.setTimeout(function() {
+      select($(this));
+      clickTimer = null;
+    }, 100);
+  });
 
   //Property, support IE9+
   define(nav, 'loading', {
@@ -311,17 +306,12 @@ var Nav = (function() {
   //On hash change
   $(window).hashchange(change);
   $(window).hashchange();
-  //On size changed, update the height, 
-  $(window).resize(update);
-  //fire by default
-  update();
 
   //Public Method
   nav.select  = select;
   nav.bind    = bind;
   nav.load    = load;
   nav.change  = change;
-  nav.update  = update;   //update height of layout
 
   return nav;
 }());
