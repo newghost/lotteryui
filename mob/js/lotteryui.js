@@ -198,17 +198,25 @@ Navigation buttons: swap page
 var Nav = (function() {
   var nav = {};
 
-  var $navbtns = $(".lotery-nav a"),
-      $loading = $("#loading");
+  var $navbtns = $(".lot-nav a"),
+      $loading = $("#loading"),
+      clickTimer;
 
   $navbtns.mousedown(function(e) {
-    var $this = $(this);
-
-    select($this);
+    //prevent click too fast.
+    if (clickTimer) return;
+    clickTimer = window.setTimeout(function() {
+      select($(this));
+      clickTimer = null;
+    }, 100);
   });
 
   //Reset the height of lottery
   var update = function(height) {
+    //overlaps when layout inner become bigger.
+    window.scroll(0, 0);
+    return;
+
     var $selected = $("#lottery>ul>li.selected"),
         $body     = $(".bodyb, .body, .bodyt");
 
@@ -230,22 +238,22 @@ var Nav = (function() {
       !Lottery.running && update();
       nav.loading = false;
     });
-
-    //After add, switch lottery.
-    update("auto");
-    Lottery.mvto(hash, update);
   };
 
   //Selected at the NavBar, lottery will triggered by hashchanged
   var select = function($navbtn) {
-    //will used as id, so need to remove special characters.
-    var hash = $navbtn.attr("href").replace(/[^\w-]/g, '_');
 
-    if (hash) {
+    if ($navbtn && $navbtn.size() && $navbtn.attr("href")) {
+      //will used as id, so need to remove special characters.
+      var hash = $navbtn.attr("href").replace(/[^\w-]/g, '');
+
       //Load new content into slider?
       var url = $navbtn.attr("data-url");
       url && load(hash, url);
-      Lottery.mvto(hash);
+
+      //Switch lottery.
+      update("auto");
+      Lottery.mvto(hash, update);
 
       $navbtns.removeClass("selected");
       $navbtn.addClass("selected");
@@ -255,9 +263,6 @@ var Nav = (function() {
   //change current slide
   var change = function() {
     var hash = location.hash;
-
-    update("auto");
-    Lottery.mvto(hash, update);
 
     $navbtns.each(function() {
       var $this = $(this);
@@ -270,10 +275,7 @@ var Nav = (function() {
   //Bind nav functions on links
   var bind = function(selector) {
     $(selector).click(function(e) {
-      var $this = $(this);
-      var hash = $this.attr("href") || "";
-
-      hash && (hash.charAt(0) == '#') && select($this);
+      select($(this));
     });
   };
 

@@ -1,45 +1,19 @@
-* { 
+.lot-ui { 
+  background: #ddd;
+  font: 14px/1.4 Georgia, Serif;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+.lot-ui * {
   margin: 0; 
   padding: 0; 
 }
 
-body { 
-  background: #ddd;
-  font: 14px/1.4 Georgia, Serif;
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-
-/* 
-Generic Styling, for Desktops/Laptops 
-*/
-table { 
-  width: 100%; 
-  border-collapse: collapse; 
-}
-
-/* Zebra striping */
-tr:nth-of-type(odd) { 
-  background: #eee; 
-}
-
-th { 
-  background: #333; 
-  color: white; 
-  font-weight: bold; 
-}
-
-td, th { 
-  padding: 6px; 
-  border: 1px solid #ccc; 
-  text-align: left; 
-}
-
-h1 {
-  padding: 0 10px;
-}
-
-button, input, label, select {
+.lot-ui button,
+.lot-ui input,
+.lot-ui label,
+.lot-ui select {
   border: medium none;
   display: block;
   font-size: 18px;
@@ -48,15 +22,15 @@ button, input, label, select {
   width: 100%;
 }
 
-label {
+.lot-ui label {
   text-align: left;
 }
 
-ul {
+.lot-ui ul {
   list-style: none outside none;
 }
 
-.hide {
+.lot-ui .hide {
   display: none;
 }
 
@@ -75,12 +49,13 @@ only screen and (max-width: 760px),
 @media only screen
 and (min-device-width : 320px)
 and (max-device-width : 480px) {
-  body { 
+  .lot-ui { 
     padding: 0; 
     margin: 0; 
     width: 320px;
   }
-  td, th {
+  .lot-ui td,
+  .lot-ui th {
     font-size: 50%;
   }
 }
@@ -93,7 +68,7 @@ and (max-device-width : 480px) {
 }
 
 /* Loading */
-@-webkit-keyframes rotatation {
+@-webkit-keyframes lot-rotatation {
   from {
     -webkit-transform: rotate(0deg); 
     -moz-transform: rotate(0deg); 
@@ -108,7 +83,7 @@ and (max-device-width : 480px) {
   }
 }
 
-@keyframes rotatation {
+@keyframes lot-rotatation {
   from {
     -webkit-transform: rotate(0deg); 
     -moz-transform: rotate(0deg); 
@@ -123,19 +98,19 @@ and (max-device-width : 480px) {
   }
 }
 
-.loading {
+.lot-ui .loading {
   -webkit-animation-duration:         3s;
-  -webkit-animation-name:             rotatation;
+  -webkit-animation-name:             lot-rotatation;
   -webkit-animation-iteration-count:  infinite;
   -webkit-animation-timing-function:  linear;
 
   animation-duration:         3s;
-  animation-name:             rotatation;
+  animation-name:             lot-rotatation;
   animation-iteration-count:  infinite;
   animation-timing-function:  linear;
 }
 
-.loading {
+.lot-ui .loading {
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAMAAABHPGVmAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRFU6fW////7vtARwAAAAJ0Uk5T/wDltzBKAAABIklEQVR42uyaSxLDMAhD8f0v3UW76EwNRTI4cUZeO7zJByxBbGxYJoggme2f1Qixr9UFMSMpd4OYsRRBzoA4USohbpxCiB9oC+RPMgZs5MFHkPAWobebY0xuEvuELPXlLULeG9AUqkkGQToh3PF3SwglSWCIn3G0xjD3Gkr0IRBCiSIFsgDTK7jdhyx/IoggeQjnOCEI6ziTDtmWzGCyUlZDpqFsSa5fA5mHEkSQXsjoSpMmiJ+MlQUygFD6FyyQnP7NS8mWU+qnyyAhIYggDIQsMEB7kK2VC+3BJh+/A0KexFhvRRBBDoeMRBM9mmsUZHzV1GEkGUvzk0hM5iZB2fags5WaeoAnoyamghwOec6PGHv+W6FNMiy4GZP8HOvwEmAAX8gf6WEC3ZoAAAAASUVORK5CYII=");
   display: block;
   height: 100px;
@@ -143,7 +118,26 @@ and (max-device-width : 480px) {
   width: 100px;
 }
 
+/* Data-table   */
+.lot-ui .data {
+  width: 100%;
+}
 
+.lot-ui .data tr:nth-of-type(odd) { 
+  background: #eee; 
+}
+
+.lot-ui .data th {
+  background: #333; 
+  color: white; 
+  font-weight: bold; 
+}
+
+.lot-ui .data td, th {
+  padding: 6px; 
+  border: 1px solid #ccc; 
+  text-align: left; 
+}
 
 #lottery {
   overflow-x: hidden;
@@ -173,8 +167,8 @@ and (max-device-width : 480px) {
   z-index: 994;
 }
 
-.header ,
-.footer {
+.lot-ui .header ,
+.lot-ui .footer {
   background-color: #000;
   bottom: 0;
   height: 64px;
@@ -193,11 +187,11 @@ and (max-device-width : 480px) {
 }
 */
 
-.footer a {
+.lot-ui .footer a {
   color: #fff;
 }
 
-.footer .icon:before {
+.lot-ui .footer .icon:before {
   font-size: 48px;
   left: 10px;
   line-height: 62px;
@@ -206,7 +200,7 @@ and (max-device-width : 480px) {
   top: -10px;
 }
 
-.footer a {
+.lot-ui .footer a {
   color: #A7A7A7;
   display: inline-block;
   font-family: Helvetica,Arial,sans-serif;
@@ -222,11 +216,14 @@ and (max-device-width : 480px) {
   width: 62px;
 }
 
-.footer a:active, .footer a:focus, .footer a:active:focus, .footer .selected {
+.lot-ui .footer a:active, 
+.lot-ui .footer a:focus, 
+.lot-ui .footer a:active:focus, 
+.lot-ui .footer .selected {
   color: #fff !important;
 }
 
-.header {
+.lot-ui .header {
   bottom: auto;
   color: #FFFFFF;
   height: 32px;
@@ -234,30 +231,30 @@ and (max-device-width : 480px) {
   top: 0;
 }
 
-.header a {
+.lot-ui .header a {
   color: #ddd;
   text-decoration: none;
 }
 
-.header a.icon:before {
+.lot-ui .header a.icon:before {
   font-size: 32px;
   top: 6px;
 }
 
-.header a.selected {
+.lot-ui .header a.selected {
   color: #ff0;
 }
 
-.header a.back {
+.lot-ui .header a.back {
   float: left;
 }
 
-.header a.home {
+.lot-ui .header a.home {
   float: right;
   margin-right: 5px;
 }
 
-.leftlabel {
+.lot-ui .leftlabel {
   float: left;
   font-size: 20px;
   font-weight: 700;
@@ -265,67 +262,54 @@ and (max-device-width : 480px) {
   width: auto;
 }
 
-.leftinput {
+.lot-ui .leftinput {
   display: block;
   margin: 0 16px 0 140px;
 }
 
-.oneinput {
+.lot-ui .oneinput {
   width: 100%;
 }
 
-.oneinput input {
+.lot-ui .oneinput input {
   border-radius: 4px;
   margin: 10px auto;
   width: 94%;
 }
 
-.oneinput[data-hint]:after {
+.lot-ui .oneinput[data-hint]:after {
   display: block;
   margin: 0 3%;
   padding: 8px 0;
   width: 94%;
 }
 
-.body {
+.lot-ui .body {
   margin: 40px 0 70px;
   overflow: hidden;
 }
 
-.bodyb {
+.lot-ui .bodyb {
   margin: 40px 0 0;
   overflow: hidden;
 }
 
 
-#main {
-  text-align: center;
-}
-
-/*
-#outlets {
-  margin-right: -20px;
-  width: 90%;
-}
-*/
-
-
-
-.mulsel li {
+.lot-ui .mulsel li {
   border-top: 1px dashed #333;
   color: #000000;
   padding: 1em;
 }
 
-.mulsel li.selected {
+.lot-ui .mulsel li.selected {
   background-color: #ff0;
 }
 
-.mulsel .tool {
+.lot-ui .mulsel .tool {
   padding: 10px 30px 20px 10px;
 }
 
-.mask {
+.lot-ui .mask {
   background: none repeat scroll 0 0 #000;
   bottom: -2%;
   left: -2%;
@@ -337,7 +321,7 @@ and (max-device-width : 480px) {
   z-index: 1000;
 }
 
-.dialog {
+.lot-ui .dialog {
   position: fixed;
   left: 0;
   right: 0;
@@ -346,7 +330,7 @@ and (max-device-width : 480px) {
   z-index: 1000;
 }
 
-.msg {
+.lot-ui .msg {
   background: #fff;
   position: fixed;
   left: 20px;
@@ -355,38 +339,39 @@ and (max-device-width : 480px) {
   z-index: 1100;
 }
 
-.msg > h3{
+.lot-ui .msg > h3{
   background: #000;
   color: #fff;
   padding: 4px 10px;
 }
 
-.msg .msgb {
+.lot-ui .msg .msgb {
   min-height: 60px;
   padding: 10px;
 }
 
-.msg .msgf {
+.lot-ui .msg .msgf {
   border: none;
   width: 100%;
 }
 
-.msg .msgf td {
+.lot-ui .msg .msgf td {
   border: solid 1px #000;
 }
 
-.msg .msgf button {
+.lot-ui .msg .msgf button {
   border:none;
   background: #fff;
-  padding: 0;
+  padding: 14px 0;
+  margin: 0;
 }
 
-.menubar > li > a {
+.lot-ui .menubar > li > a {
   background-color: #00f;
   color: #fff;
 }
 
-.menubar li > a {
+.lot-ui .menubar li > a {
   border-bottom: 1px solid #000000;
   display: block;
   padding: 12px 0;
@@ -394,10 +379,10 @@ and (max-device-width : 480px) {
   text-indent: 12px;
 }
 
-.menubar > li > ul {
+.lot-ui .menubar > li > ul {
   display: none;
 }
 
-.menubar > li.expand > ul {
+.lot-ui .menubar > li.expand > ul {
   display: block;
 }
