@@ -6,8 +6,11 @@
 * https://github.com/newghost/lotteryui.git
 */
 
-//Compative with zepto
+//Compatible with zepto
 var jQuery  = jQuery || Zepto;
+
+//Shortcuts
+var define = Object.defineProperty;
 
 /*
 Plugin: Hash Change Event for Zepto / jQuery
@@ -181,6 +184,18 @@ var Lottery = (function() {
 
   lottery.running = false;
 
+  define(lottery, "running", {
+    get: function() {
+      return this._running;
+    }
+    , set: function(value) {
+      var $container = $(document.body);
+      value
+        ? $container.addClass("lot-running")
+        : $container.removeClass("lot-running");
+    }
+  });
+
   lottery.init    = init;
   lottery.index   = index;
   lottery.resize  = resize;
@@ -199,7 +214,7 @@ var Nav = (function() {
   var nav = {};
 
   var $navbtns = $(".lot-nav a"),
-      $loading = $("#loading"),
+      $loading = $("#lot-loading"),
       clickTimer;
 
   $navbtns.mousedown(function(e) {
@@ -280,11 +295,16 @@ var Nav = (function() {
   };
 
   //Property, support IE9+
-  Object.defineProperty(nav, 'loading', {
-    set: function(value) {
+  define(nav, 'loading', {
+    get: function() {
+      return this._loading;
+    }
+    , set: function(value) {
       value
         ? $loading.show()
         : $loading.hide();
+
+      this._loading = value;
     }
   });
 

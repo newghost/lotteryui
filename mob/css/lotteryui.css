@@ -3,6 +3,8 @@
   font: 14px/1.4 Georgia, Serif;
   overflow-x: hidden;
   overflow-y: scroll;
+  margin: 0;
+  padding: 0;
 }
 
 .lot-ui * {
@@ -156,6 +158,18 @@ and (max-device-width : 480px) {
   padding: 0;
   width: 100%;
   overflow: hidden;
+}
+
+#lottery > ul > li > * {
+  display: none;
+}
+
+#lottery > ul > li.selected > * {
+  display: block;
+}
+
+.lot-running #lottery > ul > li > * {
+  display: block;
 }
 
 #lottery .footer {
