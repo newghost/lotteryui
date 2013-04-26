@@ -257,7 +257,7 @@ var Nav = (function() {
 
   //change current slide
   var mvto = function(hash) {
-    var hash = hash || location.hash;
+    var hash = hash.constructor == String ? hash : location.hash;
 
     $navbtns.each(function() {
       var $this = $(this);
