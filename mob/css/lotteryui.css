@@ -130,15 +130,15 @@ and (max-device-width : 480px) {
 }
 
 .lot-ui .data th {
-  background: #333; 
+  background: #333;
   color: white; 
   font-weight: bold; 
+  padding: 6px;
 }
 
 .lot-ui .data td, th {
-  padding: 6px; 
-  border: 1px solid #ccc; 
   text-align: left; 
+  padding: 6px; 
 }
 
 #lottery {
@@ -207,10 +207,6 @@ and (max-device-width : 480px) {
 }
 */
 
-.lot-ui .footer a {
-  color: #fff;
-}
-
 .lot-ui .footer .icon:before {
   font-size: 48px;
   left: 10px;
@@ -220,7 +216,8 @@ and (max-device-width : 480px) {
   top: -10px;
 }
 
-.lot-ui .footer a {
+.lot-ui .footer .icon {
+  background-color: transparent;
   color: #A7A7A7;
   display: inline-block;
   font-family: Helvetica,Arial,sans-serif;
@@ -230,17 +227,18 @@ and (max-device-width : 480px) {
   line-height: 100px;
   margin: 0 4px;
   overflow: hidden;
+  padding: 0;
   position: relative;
   text-align: center;
   text-decoration: none;
   width: 62px;
 }
 
-.lot-ui .footer a:active, 
-.lot-ui .footer a:focus, 
-.lot-ui .footer a:active:focus, 
-.lot-ui .footer .selected {
-  color: #fff !important;
+.lot-ui .footer .icon:active, 
+.lot-ui .footer .icon:focus, 
+.lot-ui .footer .icon:active:focus, 
+.lot-ui .footer .icon.selected {
+  color: #fff;
 }
 
 .lot-ui .header {
@@ -405,4 +403,45 @@ and (max-device-width : 480px) {
 
 .lot-ui .menubar > li.expand > ul {
   display: block;
+}
+
+.lot-ui .tree {
+
+}
+
+.lot-ui .tree li {
+  border: 1px solid #333;
+  margin: 12px;
+}
+
+.lot-ui .tree > li,
+.lot-ui .tree > li > p {
+  margin: 0;
+}
+
+/*p means will have children nodes*/
+.lot-ui .tree p {
+  background-color: #333333;
+  /*margin: 2px;*/
+}
+
+.lot-ui .tree p a {
+  color: #fff;
+  padding-left: 12px;
+}
+
+/*ul means container of the sub nodes*/
+.lot-ui .tree ul {
+  /*
+  border-bottom: 1px dashed #333;
+  border-left: 1px dashed #333;
+  border-right: 1px dashed #333;
+  */
+}
+
+.lot-ui .tree a {
+  color: #000;
+  display: block;
+  padding: 6px;
+  text-decoration: none;
 }

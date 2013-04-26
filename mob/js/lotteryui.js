@@ -75,13 +75,6 @@ Public method
     window.CLICK     = "tap";
   }
 
-  //debug info
-  window.console   = {
-    log: function() {
-	  //$(".lot-nav").append(Array.prototype.join.call(arguments) + ', ');
-    }
-  };
-
 })(window);
 
 
@@ -98,13 +91,15 @@ var Lottery = (function() {
       curIdx          = 0,
       speed           = 100;
 
-  var $container      = $("#lottery"),
-      $content        = $("#lottery>ul");
+  var $container        = $("#lottery")
+      , $wrapper        = $(".lot-ui")
+      , contentWrapper  = "#lottery>ul"
+      , contentSliders  = "#lottery>ul>li";
 
   var init = function() {
     itemWidth = $container.width();
-    $content.width(200000);
-    $("#lottery>ul>li").width(itemWidth);
+    $(contentWrapper).width(200000);
+    $(contentSliders).width(itemWidth);
   };
 
   //Index of the slkider in Lottery, doesn't found return -1
@@ -123,7 +118,7 @@ var Lottery = (function() {
     lottery.running = true;
     clearInterval(timer);
 
-    $("#lottery>ul>li").removeClass("selected");
+    $(contentSliders).removeClass("selected");
 
     var tarPos = (0 - idx) * itemWidth;
 
@@ -134,13 +129,13 @@ var Lottery = (function() {
         stop(idx, callback);
 
       } else {
-        curPos = parseInt($content.css("left")) | 0;
+        curPos = parseInt($(contentWrapper).css("left")) | 0;
 
         curPos > tarPos
           ? (curPos -= speed)
           : (curPos += speed);
 
-        $content.css("left", curPos);
+        $(contentWrapper).css("left", curPos);
       }
 
     }, 50);
@@ -153,8 +148,12 @@ var Lottery = (function() {
     curPos = (0 - idx) * itemWidth;
     curIdx = idx;
 
-    $content.css("left", curPos);
-    $("#lottery>ul>li").eq(idx).addClass("selected");
+    $(contentWrapper).css("left", curPos);
+    $(contentSliders).eq(idx).addClass("selected");
+
+    var hash = location.hash;
+    hash && $wrapper.attr("lot-hash", hash.replace('#', ''));
+
     callback && callback();
   };
 
@@ -167,7 +166,7 @@ var Lottery = (function() {
         .attr({id: idx.substr(1)})
         .width(itemWidth);
 
-      $content.append($slide);
+      $(contentWrapper).append($slide);
     };
 
     $slide
@@ -193,10 +192,9 @@ var Lottery = (function() {
       return this._running;
     }
     , set: function(value) {
-      var $container = $(document.body);
       value
-        ? $container.addClass("lot-running")
-        : $container.removeClass("lot-running");
+        ? $wrapper.addClass("lot-running")
+        : $wrapper.removeClass("lot-running");
     }
   });
 
@@ -236,11 +234,14 @@ var Nav = (function() {
   };
 
   //Selected at the NavBar, lottery will triggered by hashchanged
-  var select = function($navbtn) {
+  var select = function(navbtn) {
+    $navbtn = $(navbtn);
 
     if ($navbtn && $navbtn.size() && $navbtn.attr("href")) {
       //will used as id, so need to remove special characters.
       var hash = $navbtn.attr("href").replace(/[^\w-]/g, '');
+
+      location.hash = hash;
 
       //Load new content into slider?
       var url = $navbtn.attr("data-url");
@@ -255,8 +256,8 @@ var Nav = (function() {
   };
 
   //change current slide
-  var change = function() {
-    var hash = location.hash;
+  var mvto = function(hash) {
+    var hash = hash || location.hash;
 
     $navbtns.each(function() {
       var $this = $(this);
@@ -304,14 +305,14 @@ var Nav = (function() {
   });
 
   //On hash change
-  $(window).hashchange(change);
+  $(window).hashchange(mvto);
   $(window).hashchange();
 
   //Public Method
   nav.select  = select;
   nav.bind    = bind;
   nav.load    = load;
-  nav.change  = change;
+  nav.mvto    = mvto;
 
   return nav;
 }());
@@ -391,17 +392,28 @@ MenuBar
 */
 var MenuBar = (function() {
 
-  var $panels = $(".menubar > li > a"),
-      $item   = $(".menubar > li > a");
+  var $panels;
 
-  $panels.click(function(e) {
-    e.preventDefault();
+  var init = function() {
+    $panels = $(".menubar > li > a");
 
-    var $this   = $(this),
-        $panel  = $this.closest("li");
+    $panels.click(function(e) {
+      e.preventDefault();
 
-    $panel.toggleClass("expand");
-  });
+      var $this   = $(this),
+          $panel  = $this.closest("li");
 
-  Nav.bind($(".menubar > li a"));
+      $panel.toggleClass("expand");
+    });
+
+    Nav.bind($(".menubar > li a"));
+  };
+
+  return { 
+    init: init
+  }
+
 })();
+
+//Bind immediately
+MenuBar.init();
