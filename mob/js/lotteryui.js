@@ -98,6 +98,7 @@ var Lottery = (function() {
 
   var init = function() {
     itemWidth = $container.width();
+    speed = itemWidth / 3 | 0;
     $(contentWrapper).width(200000);
     $(contentSliders).width(itemWidth);
   };
@@ -111,17 +112,25 @@ var Lottery = (function() {
     return $(hash).index();
   };
 
-  var mvto  = function(idx, callback) {
-    if (idx.constructor == String) idx = index(idx);
-    if (idx.constructor != Number || idx < 0) return;
+  var mvto  = function(hash, callback) {
+    var idx;
 
-    lottery.running = true;
-    clearInterval(timer);
+    if (hash.constructor == String) {
+      idx = index(hash);
+    } else if (hash.constructor == Number && hash > -1) {
+      idx   = hash;
+      hash  = $(contentSliders).eq(idx).attr("id").replace("lot-", "");
+    } else {
+      return;
+    }
 
-    $(contentSliders).removeClass("selected");
+    location.hash.indexOf(hash) < 0 && (location = "#" + hash.replace("#", ""));
 
+    //if current idx is not equal target index, set running is true, or just resize
+    (curIdx != idx) && (lottery.running = true);
+    //start running animation.
     var tarPos = (0 - idx) * itemWidth;
-
+    clearInterval(timer);
     timer = setInterval(function() {
 
       if (Math.abs(curPos - tarPos) < speed ) {
@@ -138,7 +147,7 @@ var Lottery = (function() {
         $(contentWrapper).css("left", curPos);
       }
 
-    }, 50);
+    }, 100);
   };
 
   var stop = function(idx, callback) {
@@ -149,7 +158,12 @@ var Lottery = (function() {
     curIdx = idx;
 
     $(contentWrapper).css("left", curPos);
-    $(contentSliders).eq(idx).addClass("selected");
+    $(contentSliders).each(function(i, el) {
+      var $this = $(this);
+      (i == idx) 
+        ? $this.addClass("selected")
+        : $this.removeClass("selected");
+    });
 
     var hash = location.hash;
     hash && $wrapper.attr("lot-hash", hash.replace('#', ''));
@@ -172,6 +186,13 @@ var Lottery = (function() {
     $slide
       .addClass("selected")
       .html(html);
+  };
+
+  //write html on lot-slide
+  var html = function(idx, html) {
+    idx = "#lot-" + (idx.charAt(0) == "#" ? idx.substr(1) : idx);
+    var $slide = $(idx);
+    $slide.html(html);
   };
 
   var resize = function() {
@@ -204,6 +225,7 @@ var Lottery = (function() {
   lottery.mvto = mvto;
   lottery.stop = stop;
   lottery.add  = add;
+  lottery.html = html;
 
   return lottery;
 })();
@@ -221,15 +243,22 @@ var Nav = (function() {
 
   //load new content to slide
   var load = function(hash, url) {
-    //Pre add, so can go
+    //Pre add, so can move
     Lottery.add(hash, '');
 
     //Load the content and reset the height
     nav.loading = true;
-    $.get(url, function(html) {
-      Lottery.add(hash, html);
-      //Lottery.mvto(hash);
-      nav.loading = false;
+    $.ajax({
+      url: url,
+      success: function(html) {
+        Lottery.add(hash, html);
+        //Lottery.mvto(hash);
+        nav.loading = false;
+      },
+      error: function() {
+        //if not found will hidden the loading layer
+        nav.loading = false;
+      }
     });
   };
 

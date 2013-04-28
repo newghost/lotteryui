@@ -183,7 +183,8 @@ and (max-device-width : 480px) {
   display: block;
 }
 
-.lot-running #lottery > ul > li .footer {
+.lot-running #lottery > ul > li .footer, 
+.lot-running #lottery > ul > li .dialog {
   display: none;
 }
 
@@ -340,12 +341,17 @@ and (max-device-width : 480px) {
 }
 
 .lot-ui .dialog {
+  background-color: #ddd;
   position: fixed;
   left: 0;
   right: 0;
   top: 0;
   bottom: 0;
   z-index: 1000;
+}
+
+.lot-ui #lot-loading {
+  background-color: transparent;
 }
 
 .lot-ui .msg {
@@ -384,13 +390,22 @@ and (max-device-width : 480px) {
   margin: 0;
 }
 
+.lot-ui .head {
+  background-color: #333333;
+  color: #FFFFFF;
+  font-size: 18px;
+  font-weight: 700;
+  padding: 0.4em;
+  text-align: center;
+}
+
 .lot-ui .menubar > li > a {
-  background-color: #00f;
+  background-color: #333;
   color: #fff;
 }
 
 .lot-ui .menubar li > a {
-  border-bottom: 1px solid #000000;
+  border-bottom: 1px solid #000;
   display: block;
   padding: 12px 0;
   text-decoration: none;
@@ -414,20 +429,16 @@ and (max-device-width : 480px) {
   margin: 12px;
 }
 
-.lot-ui .tree > li,
-.lot-ui .tree > li > p {
+.lot-ui .tree > li {
   margin: 0;
 }
 
 /*p means will have children nodes*/
-.lot-ui .tree p {
+.lot-ui .tree .tree-node {
   background-color: #333333;
-  /*margin: 2px;*/
-}
-
-.lot-ui .tree p a {
   color: #fff;
   padding-left: 12px;
+  margin: 0;
 }
 
 /*ul means container of the sub nodes*/
@@ -444,4 +455,15 @@ and (max-device-width : 480px) {
   display: block;
   padding: 6px;
   text-decoration: none;
+}
+
+.lot-ui .tree .icon {
+  color: #fff;
+  cursor: pointer;
+  display: block;
+  float: right;
+  line-height: 32px;
+  margin: -32px 0 0;
+  padding-left: 16px;
+  width: 40px;
 }
