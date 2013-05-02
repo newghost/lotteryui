@@ -57,7 +57,8 @@ and (max-device-width : 480px) {
     width: 320px;
   }
   .lot-ui td,
-  .lot-ui th {
+  .lot-ui th,
+  .lot-ui .tree a {
     font-size: 50%;
   }
 }
@@ -273,6 +274,17 @@ and (max-device-width : 480px) {
   margin-right: 5px;
 }
 
+/*header in the slider*/
+.lot-ui #lottery > ul .header {
+  background-color: #333;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  padding: 0.4em;
+  position: static;
+  text-align: center;
+}
+
 .lot-ui .leftlabel {
   float: left;
   font-size: 20px;
@@ -390,15 +402,6 @@ and (max-device-width : 480px) {
   margin: 0;
 }
 
-.lot-ui .head {
-  background-color: #333333;
-  color: #FFFFFF;
-  font-size: 18px;
-  font-weight: 700;
-  padding: 0.4em;
-  text-align: center;
-}
-
 .lot-ui .menubar > li > a {
   background-color: #333;
   color: #fff;
@@ -453,6 +456,7 @@ and (max-device-width : 480px) {
 .lot-ui .tree a {
   color: #000;
   display: block;
+  line-height: 20px;
   padding: 6px;
   text-decoration: none;
 }

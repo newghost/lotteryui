@@ -17,7 +17,8 @@ Plugin: Hash Change Event for Zepto / jQuery
 Support: IE8+, FF, Chrome, Safari
 */
 (function() {
-  var eventName = "hashchange";
+  var eventName = "hashchange"
+    , handlers  = [];
 
   var trigger = function(el, evtName) {
     //For IE9+, FF, Chrome
@@ -31,6 +32,18 @@ Support: IE8+, FF, Chrome, Safari
     }
   };
 
+  var bind = function(el, handler) {
+    console.log("bind", handler);
+    el.addEventListener && el.addEventListener(eventName, handler);
+    el.attachEvent && el.attachEvent("on" + eventName, handler);
+  };
+
+  var unbind = function(el, handler) {
+    console.log("unbind", handler);
+    el.removeEventListener && el.removeEventListener(eventName, handler);
+    el.detachEvent && el.detachEvent("on" + eventName, handler);
+  };
+
   $.fn.hashchange = function(handler) {
     var $this = $(this);
 
@@ -38,11 +51,32 @@ Support: IE8+, FF, Chrome, Safari
       var el = $this[0];
 
       if (handler) {
-        el.addEventListener && el.addEventListener(eventName, handler);
-        el.attachEvent && el.attachEvent("on" + eventName, handler);
+        handlers.push(handler);
+        bind(el, handler);
       } else {
         trigger(el, eventName);
       }
+    }
+
+    return $this;
+  };
+
+  //change hash without trigger the hashchange event
+  $.fn.updatehash = function(hash) {
+    var $this = $(this);
+
+    if ($this.size()) {
+      var el = $this[0];
+
+      handlers.forEach(function(handler) {
+        unbind(el, handler);
+      });
+
+      location.hash = hash;
+
+      handlers.forEach(function(handler) {
+        bind(el, handler);
+      });
     }
 
     return $this;
@@ -91,10 +125,10 @@ var Lottery = (function() {
       curIdx          = 0,
       speed           = 100;
 
-  var $container        = $("#lottery")
-      , $wrapper        = $(".lot-ui")
-      , contentWrapper  = "#lottery>ul"
-      , contentSliders  = "#lottery>ul>li";
+  var $container      = $("#lottery")
+    , $wrapper        = $(".lot-ui")
+    , contentWrapper  = "#lottery>ul"
+    , contentSliders  = "#lottery>ul>li";
 
   var init = function() {
     itemWidth = $container.width();
@@ -124,7 +158,7 @@ var Lottery = (function() {
       return;
     }
 
-    location.hash.indexOf(hash) < 0 && (location = "#" + hash.replace("#", ""));
+    location.hash.indexOf(hash) < 0 && $(window).updatehash(hash);
 
     //if current idx is not equal target index, set running is true, or just resize
     (curIdx != idx) && (lottery.running = true);
@@ -243,23 +277,30 @@ var Nav = (function() {
 
   //load new content to slide
   var load = function(hash, url) {
-    //Pre add, so can move
-    Lottery.add(hash, '');
+    var tmpl = $("style[data-url='" + url + "']");
+    var html = tmpl.size()
+             ? tmpl.html().trim()
+             : "";
 
-    //Load the content and reset the height
-    nav.loading = true;
-    $.ajax({
-      url: url,
-      success: function(html) {
-        Lottery.add(hash, html);
-        //Lottery.mvto(hash);
-        nav.loading = false;
-      },
-      error: function() {
-        //if not found will hidden the loading layer
-        nav.loading = false;
-      }
-    });
+    //Pre add, so can move
+    Lottery.add(hash, html);
+
+    //If cannot found the html on the page, load the content via ajax.
+    if (html.length < 1) {
+      nav.loading = true;
+      $.ajax({
+        url: url,
+        success: function(html) {
+          Lottery.add(hash, html);
+          //Lottery.mvto(hash);
+          nav.loading = false;
+        },
+        error: function() {
+          //if not found will hidden the loading layer
+          nav.loading = false;
+        }
+      });
+    }
   };
 
   //Selected at the NavBar, lottery will triggered by hashchanged
@@ -269,8 +310,6 @@ var Nav = (function() {
     if ($navbtn && $navbtn.size() && $navbtn.attr("href")) {
       //will used as id, so need to remove special characters.
       var hash = $navbtn.attr("href").replace(/[^\w-]/g, '');
-
-      location.hash = hash;
 
       //Load new content into slider?
       var url = $navbtn.attr("data-url");
@@ -299,6 +338,7 @@ var Nav = (function() {
   //Bind nav functions on links: Click
   var bind = function(selector) {
     $(selector).click(function(e) {
+      e.preventDefault();
       if (clickTimer) return;
       var $this = $(this);
       clickTimer = window.setTimeout(function() {
@@ -314,6 +354,7 @@ var Nav = (function() {
     if (clickTimer) return;
     var $this = $(this);
     clickTimer = window.setTimeout(function() {
+      console.log("click navbtn");
       select($this);
       clickTimer = null;
     }, 100);
