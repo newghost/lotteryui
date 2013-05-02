@@ -33,13 +33,11 @@ Support: IE8+, FF, Chrome, Safari
   };
 
   var bind = function(el, handler) {
-    console.log("bind", handler);
     el.addEventListener && el.addEventListener(eventName, handler);
     el.attachEvent && el.attachEvent("on" + eventName, handler);
   };
 
   var unbind = function(el, handler) {
-    console.log("unbind", handler);
     el.removeEventListener && el.removeEventListener(eventName, handler);
     el.detachEvent && el.detachEvent("on" + eventName, handler);
   };
@@ -68,15 +66,20 @@ Support: IE8+, FF, Chrome, Safari
     if ($this.size()) {
       var el = $this[0];
 
+      /*
+      unbind hashchange event first, and then bind again after a bit of delay (for FF)
+      */
       handlers.forEach(function(handler) {
         unbind(el, handler);
       });
 
       location.hash = hash;
 
-      handlers.forEach(function(handler) {
-        bind(el, handler);
-      });
+      window.setTimeout(function() {
+        handlers.forEach(function(handler) {
+          bind(el, handler);
+        });
+      }, 300);
     }
 
     return $this;
@@ -240,8 +243,6 @@ var Lottery = (function() {
   // Trigger the init after a bit of delay
   setTimeout(init, 100);
 
-  lottery.running = false;
-
   define(lottery, "running", {
     get: function() {
       return this._running;
@@ -347,18 +348,6 @@ var Nav = (function() {
       }, 100);
     });
   };
-
-  //Bind nav functions on navigation: Mousedown
-  $navbtns.mousedown(function(e) {
-    //prevent click too fast.
-    if (clickTimer) return;
-    var $this = $(this);
-    clickTimer = window.setTimeout(function() {
-      console.log("click navbtn");
-      select($this);
-      clickTimer = null;
-    }, 100);
-  });
 
   //Property, support IE9+
   define(nav, 'loading', {
