@@ -1,17 +1,10 @@
 Lottery UI
 =========
-A very very simple ui switch framework for mobile device.
-
-Compatible with jQuery/ Zepto
+A simple ui switch framework for mobile device.
 
 Support: IE8+, FF, Chrome, Safari.
 
 Please find [Demo](http://newghost.github.io/lotteryui/demo.html) here.
-
-
-
-
-
 
 
 

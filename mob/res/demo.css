@@ -1,7 +1,3 @@
-.lot-ui[lot-hash=login] .header {
-  display: none;
-}
-
 #pdus li {
   border-bottom: 1px dashed #333;
   color: #000;
