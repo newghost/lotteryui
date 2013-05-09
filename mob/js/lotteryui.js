@@ -285,6 +285,7 @@ var Nav = (function() {
 
     //Pre add, so can move
     Lottery.add(hash, html);
+    Lottery.mvto(hash);
 
     //If cannot found the html on the page, load the content via ajax.
     if (html.length < 1) {
@@ -314,10 +315,7 @@ var Nav = (function() {
 
       //Load new content into slider?
       var url = $navbtn.attr("data-url");
-      url && load(hash, url);
-
-      //Switch lottery.
-      Lottery.mvto(hash);
+      url ? load(hash, url) : Lottery.mvto(hash);
 
       $navbtns.removeClass("selected");
       $navbtn.addClass("selected");
@@ -401,12 +399,12 @@ var Msg = (function() {
     var msghtml
       = '<div class="dialog">'
       + '<div class="msg">'
-      +   '<h3 class="msgh">Message</h3>'
+      +   '<h3 class="msgh"></h3>'
       +   '<div class="msgb"></div>'
       +   '<table class="msgf">'
       +   (opts.confirm
-             ? '<tr class="col2"><td><button class="msgcancel">' + opts.cancel + '</button></td><td><button class="msgconfirm">' + opts.confirm + '</button></td></tr>'
-             : '<tr class="col1"><td><button class="msgcancel">' + opts.cancel + '</button></td></tr>'
+             ? '<tr class="col2"><td class="msgcancel">' + opts.cancel + '</td><td class="msgconfirm">' + opts.confirm + '</td></tr>'
+             : '<tr class="col1"><td class="msgcancel">' + opts.cancel + '</td></tr>'
           )
       +   '</table>'
       + '</div>'
@@ -422,7 +420,7 @@ var Msg = (function() {
         , $cancel   = $(".msgcancel", $msgbox)
         , $confirm  = $(".msgconfirm", $msgbox);
 
-    $title.html(opts.title || "Message");
+    $title.html(opts.title || "MESSAGE");
     $body.html(msg);
 
     destory = function() {
