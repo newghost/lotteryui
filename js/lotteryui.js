@@ -17,7 +17,8 @@ Plugin: Hash Change Event for Zepto / jQuery
 Support: IE8+, FF, Chrome, Safari
 */
 (function() {
-  var eventName = "hashchange";
+  var eventName = "hashchange"
+    , handlers  = [];
 
   var trigger = function(el, evtName) {
     //For IE9+, FF, Chrome
@@ -31,6 +32,16 @@ Support: IE8+, FF, Chrome, Safari
     }
   };
 
+  var bind = function(el, handler) {
+    el.addEventListener && el.addEventListener(eventName, handler);
+    el.attachEvent && el.attachEvent("on" + eventName, handler);
+  };
+
+  var unbind = function(el, handler) {
+    el.removeEventListener && el.removeEventListener(eventName, handler);
+    el.detachEvent && el.detachEvent("on" + eventName, handler);
+  };
+
   $.fn.hashchange = function(handler) {
     var $this = $(this);
 
@@ -38,11 +49,37 @@ Support: IE8+, FF, Chrome, Safari
       var el = $this[0];
 
       if (handler) {
-        el.addEventListener && el.addEventListener(eventName, handler);
-        el.attachEvent && el.attachEvent("on" + eventName, handler);
+        handlers.push(handler);
+        bind(el, handler);
       } else {
         trigger(el, eventName);
       }
+    }
+
+    return $this;
+  };
+
+  //change hash without trigger the hashchange event
+  $.fn.updatehash = function(hash) {
+    var $this = $(this);
+
+    if ($this.size()) {
+      var el = $this[0];
+
+      /*
+      unbind hashchange event first, and then bind again after a bit of delay (for FF)
+      */
+      handlers.forEach(function(handler) {
+        unbind(el, handler);
+      });
+
+      location.hash = hash;
+
+      window.setTimeout(function() {
+        handlers.forEach(function(handler) {
+          bind(el, handler);
+        });
+      }, 300);
     }
 
     return $this;
@@ -75,13 +112,6 @@ Public method
     window.CLICK     = "tap";
   }
 
-  //debug info
-  window.console   = {
-    log: function() {
-	  //$(".lot-nav").append(Array.prototype.join.call(arguments) + ', ');
-    }
-  };
-
 })(window);
 
 
@@ -98,13 +128,16 @@ var Lottery = (function() {
       curIdx          = 0,
       speed           = 100;
 
-  var $container      = $("#lottery"),
-      $content        = $("#lottery>ul");
+  var $container      = $("#lottery")
+    , $wrapper        = $(".lot-ui")
+    , contentWrapper  = "#lottery>ul"
+    , contentSliders  = "#lottery>ul>li";
 
   var init = function() {
     itemWidth = $container.width();
-    $content.width(200000);
-    $("#lottery>ul>li").width(itemWidth);
+    speed = itemWidth / 3 | 0;
+    $(contentWrapper).width(200000);
+    $(contentSliders).width(itemWidth);
   };
 
   //Index of the slkider in Lottery, doesn't found return -1
@@ -116,17 +149,25 @@ var Lottery = (function() {
     return $(hash).index();
   };
 
-  var mvto  = function(idx, callback) {
-    if (idx.constructor == String) idx = index(idx);
-    if (idx.constructor != Number || idx < 0) return;
+  var mvto  = function(hash, callback) {
+    var idx;
 
-    lottery.running = true;
-    clearInterval(timer);
+    if (hash.constructor == String) {
+      idx = index(hash);
+    } else if (hash.constructor == Number && hash > -1) {
+      idx   = hash;
+      hash  = $(contentSliders).eq(idx).attr("id").replace("lot-", "");
+    } else {
+      return;
+    }
 
-    $("#lottery>ul>li").removeClass("selected");
+    location.hash.indexOf(hash) < 0 && $(window).updatehash(hash);
 
+    //if current idx is not equal target index, set running is true, or just resize
+    (curIdx != idx) && (lottery.running = true);
+    //start running animation.
     var tarPos = (0 - idx) * itemWidth;
-
+    clearInterval(timer);
     timer = setInterval(function() {
 
       if (Math.abs(curPos - tarPos) < speed ) {
@@ -134,16 +175,16 @@ var Lottery = (function() {
         stop(idx, callback);
 
       } else {
-        curPos = parseInt($content.css("left")) | 0;
+        curPos = parseInt($(contentWrapper).css("left")) | 0;
 
         curPos > tarPos
           ? (curPos -= speed)
           : (curPos += speed);
 
-        $content.css("left", curPos);
+        $(contentWrapper).css("left", curPos);
       }
 
-    }, 50);
+    }, 100);
   };
 
   var stop = function(idx, callback) {
@@ -153,8 +194,17 @@ var Lottery = (function() {
     curPos = (0 - idx) * itemWidth;
     curIdx = idx;
 
-    $content.css("left", curPos);
-    $("#lottery>ul>li").eq(idx).addClass("selected");
+    $(contentWrapper).css("left", curPos);
+    $(contentSliders).each(function(i, el) {
+      var $this = $(this);
+      (i == idx) 
+        ? $this.addClass("selected")
+        : $this.removeClass("selected");
+    });
+
+    var hash = location.hash;
+    hash && $wrapper.attr("lot-hash", hash.replace('#', ''));
+
     callback && callback();
   };
 
@@ -167,12 +217,19 @@ var Lottery = (function() {
         .attr({id: idx.substr(1)})
         .width(itemWidth);
 
-      $content.append($slide);
+      $(contentWrapper).append($slide);
     };
 
     $slide
       .addClass("selected")
       .html(html);
+  };
+
+  //write html on lot-slide
+  var html = function(idx, html) {
+    idx = "#lot-" + (idx.charAt(0) == "#" ? idx.substr(1) : idx);
+    var $slide = $(idx);
+    $slide.html(html);
   };
 
   var resize = function() {
@@ -186,17 +243,14 @@ var Lottery = (function() {
   // Trigger the init after a bit of delay
   setTimeout(init, 100);
 
-  lottery.running = false;
-
   define(lottery, "running", {
     get: function() {
       return this._running;
     }
     , set: function(value) {
-      var $container = $(document.body);
       value
-        ? $container.addClass("lot-running")
-        : $container.removeClass("lot-running");
+        ? $wrapper.addClass("lot-running")
+        : $wrapper.removeClass("lot-running");
     }
   });
 
@@ -206,6 +260,7 @@ var Lottery = (function() {
   lottery.mvto = mvto;
   lottery.stop = stop;
   lottery.add  = add;
+  lottery.html = html;
 
   return lottery;
 })();
@@ -223,20 +278,36 @@ var Nav = (function() {
 
   //load new content to slide
   var load = function(hash, url) {
-    //Pre add, so can go
-    Lottery.add(hash, '');
+    var tmpl = $("style[data-url='" + url + "']");
+    var html = tmpl.size()
+             ? tmpl.html().trim()
+             : "";
 
-    //Load the content and reset the height
-    nav.loading = true;
-    $.get(url, function(html) {
-      Lottery.add(hash, html);
-      //Lottery.mvto(hash);
-      nav.loading = false;
-    });
+    //Pre add, so can move
+    Lottery.add(hash, html);
+    Lottery.mvto(hash);
+
+    //If cannot found the html on the page, load the content via ajax.
+    if (html.length < 1) {
+      nav.loading = true;
+      $.ajax({
+        url: url,
+        success: function(html) {
+          Lottery.add(hash, html);
+          //Lottery.mvto(hash);
+          nav.loading = false;
+        },
+        error: function() {
+          //if not found will hidden the loading layer
+          nav.loading = false;
+        }
+      });
+    }
   };
 
   //Selected at the NavBar, lottery will triggered by hashchanged
-  var select = function($navbtn) {
+  var select = function(navbtn) {
+    $navbtn = $(navbtn);
 
     if ($navbtn && $navbtn.size() && $navbtn.attr("href")) {
       //will used as id, so need to remove special characters.
@@ -244,10 +315,7 @@ var Nav = (function() {
 
       //Load new content into slider?
       var url = $navbtn.attr("data-url");
-      url && load(hash, url);
-
-      //Switch lottery.
-      Lottery.mvto(hash);
+      url ? load(hash, url) : Lottery.mvto(hash);
 
       $navbtns.removeClass("selected");
       $navbtn.addClass("selected");
@@ -255,8 +323,8 @@ var Nav = (function() {
   };
 
   //change current slide
-  var change = function() {
-    var hash = location.hash;
+  var mvto = function(hash) {
+    var hash = hash.constructor == String ? hash : location.hash;
 
     $navbtns.each(function() {
       var $this = $(this);
@@ -269,25 +337,15 @@ var Nav = (function() {
   //Bind nav functions on links: Click
   var bind = function(selector) {
     $(selector).click(function(e) {
+      e.preventDefault();
       if (clickTimer) return;
-
+      var $this = $(this);
       clickTimer = window.setTimeout(function() {
-        select($(this));
+        select($this);
         clickTimer = null;
       }, 100);
     });
   };
-
-  //Bind nav functions on navigation: Mousedown
-  $navbtns.mousedown(function(e) {
-    //prevent click too fast.
-    if (clickTimer) return;
-
-    clickTimer = window.setTimeout(function() {
-      select($(this));
-      clickTimer = null;
-    }, 100);
-  });
 
   //Property, support IE9+
   define(nav, 'loading', {
@@ -304,14 +362,14 @@ var Nav = (function() {
   });
 
   //On hash change
-  $(window).hashchange(change);
+  $(window).hashchange(mvto);
   $(window).hashchange();
 
   //Public Method
   nav.select  = select;
   nav.bind    = bind;
   nav.load    = load;
-  nav.change  = change;
+  nav.mvto    = mvto;
 
   return nav;
 }());
@@ -341,12 +399,12 @@ var Msg = (function() {
     var msghtml
       = '<div class="dialog">'
       + '<div class="msg">'
-      +   '<h3 class="msgh">Message</h3>'
+      +   '<h3 class="msgh"></h3>'
       +   '<div class="msgb"></div>'
       +   '<table class="msgf">'
       +   (opts.confirm
-             ? '<tr class="col2"><td><button class="msgcancel">' + opts.cancel + '</button></td><td><button class="msgconfirm">' + opts.confirm + '</button></td></tr>'
-             : '<tr class="col1"><td><button class="msgcancel">' + opts.cancel + '</button></td></tr>'
+             ? '<tr class="col2"><td class="msgcancel">' + opts.cancel + '</td><td class="msgconfirm">' + opts.confirm + '</td></tr>'
+             : '<tr class="col1"><td class="msgcancel">' + opts.cancel + '</td></tr>'
           )
       +   '</table>'
       + '</div>'
@@ -362,7 +420,7 @@ var Msg = (function() {
         , $cancel   = $(".msgcancel", $msgbox)
         , $confirm  = $(".msgconfirm", $msgbox);
 
-    $title.html(opts.title || "Message");
+    $title.html(opts.title || "MESSAGE");
     $body.html(msg);
 
     destory = function() {
@@ -391,17 +449,28 @@ MenuBar
 */
 var MenuBar = (function() {
 
-  var $panels = $(".menubar > li > a"),
-      $item   = $(".menubar > li > a");
+  var $panels;
 
-  $panels.click(function(e) {
-    e.preventDefault();
+  var init = function() {
+    $panels = $(".menubar > li > a");
 
-    var $this   = $(this),
-        $panel  = $this.closest("li");
+    $panels.click(function(e) {
+      e.preventDefault();
 
-    $panel.toggleClass("expand");
-  });
+      var $this   = $(this),
+          $panel  = $this.closest("li");
 
-  Nav.bind($(".menubar > li a"));
+      $panel.toggleClass("expand");
+    });
+
+    Nav.bind($(".menubar > li a"));
+  };
+
+  return { 
+    init: init
+  }
+
 })();
+
+//Bind immediately
+MenuBar.init();

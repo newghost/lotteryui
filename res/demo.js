@@ -1,11 +1,9 @@
 /*
 Namespace of Company
 */
-var DEMO = DEMO || {};
+var Demo = (function() {
 
-DEMO.List = function() {
-
-  var init = function() {
+  var list = function() {
     $("#outs > li").click(function(e) {
       var $outlet = $(this);
 
@@ -15,5 +13,19 @@ DEMO.List = function() {
     });
   };
 
-  init();
-};
+  var init = function() {
+    $("#btnlogin").mousedown(function(e) {
+    	e.preventDefault();
+    	console.log("e");
+    	Nav.mvto("#settings");
+    });
+  };
+
+  return {
+  	  init: init
+  	, list: list
+  }
+
+})();
+
+Demo.init();
