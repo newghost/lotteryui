@@ -14,9 +14,8 @@ var Demo = (function() {
   };
 
   var init = function() {
-    $("#btnlogin").mousedown(function(e) {
+    $("#btnlogin").click(function(e) {
     	e.preventDefault();
-    	console.log("e");
     	Nav.mvto("#settings");
     });
   };

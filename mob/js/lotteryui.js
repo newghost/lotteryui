@@ -6,9 +6,6 @@
 * https://github.com/newghost/lotteryui.git
 */
 
-//Compatible with zepto
-var jQuery  = jQuery || Zepto;
-
 //Shortcuts
 var define = Object.defineProperty;
 
@@ -161,6 +158,8 @@ var Lottery = (function() {
       return;
     }
 
+    if (idx == -1 || hash == "") return;
+
     location.hash.indexOf(hash) < 0 && $(window).updatehash(hash);
 
     //if current idx is not equal target index, set running is true, or just resize
@@ -272,9 +271,9 @@ Navigation buttons: swap page
 var Nav = (function() {
   var nav = {};
 
-  var $navbtns = $(".lot-nav a"),
-      $loading = $("#lot-loading"),
-      clickTimer;
+  var navSelector = ".lot-nav a"
+    , $loading = $("#lot-loading")
+    , clickTimer;
 
   //load new content to slide
   var load = function(hash, url) {
@@ -316,22 +315,26 @@ var Nav = (function() {
       //Load new content into slider?
       var url = $navbtn.attr("data-url");
       url ? load(hash, url) : Lottery.mvto(hash);
-
-      $navbtns.removeClass("selected");
-      $navbtn.addClass("selected");
     }
   };
 
   //change current slide
   var mvto = function(hash) {
-    var hash = hash.constructor == String ? hash : location.hash;
+    var hash = hash.constructor == String ? hash : location.hash
+      , $btn;
 
-    $navbtns.each(function() {
+    $(navSelector).each(function() {
       var $this = $(this);
       if ($this.attr("href") == hash) {
-        return select($this);
+        $this.addClass("selected");
+        $btn = $this;
+      } else {
+        $this.removeClass("selected");
       }
     });
+
+    //It's not in the navbtns?, just move to the slide
+    $btn ? select($btn) : Lottery.mvto(hash);
   };
 
   //Bind nav functions on links: Click
@@ -347,15 +350,31 @@ var Nav = (function() {
     });
   };
 
+  var getLoader = function() {
+    if ($loading.size() < 1) {
+      var loadHtml
+        = '<div class="dialog hide" id="lot-loading">'
+        + '<div class="loading"></div>'
+        + '<div class="mask"></div>'
+        + '</div>';
+
+      $loading = $(loadHtml);
+      $(document.body).append($loading);
+    }
+    return $loading;
+  };
+
   //Property, support IE9+
   define(nav, 'loading', {
     get: function() {
       return this._loading;
     }
     , set: function(value) {
+      var $loader = getLoader();
+
       value
-        ? $loading.show()
-        : $loading.hide();
+        ? $loader.show()
+        : $loader.hide();
 
       this._loading = value;
     }
@@ -374,6 +393,15 @@ var Nav = (function() {
   return nav;
 }());
 
+/*
+Default display message showed on UI,
+You can make custom overrides.
+*/
+var MSG = {
+    title:    "MESSAGE"
+  , confirm:  "CONFIRM"
+  , cancel:   "CANCEL"
+};
 
 /*
 Message
@@ -384,46 +412,44 @@ var Msg = (function() {
 
   var confirm = function(msg, func, opts) {
     opts = opts || {};
-    opts.cancel   = opts.cancel  || "Cancel";
-    opts.confirm  = opts.confirm || "&nbsp;&nbsp;OK&nbsp;&nbsp;";
+    opts.cancel   = opts.cancel  || MSG.cancel;
+    opts.confirm  = opts.confirm || MSG.confirm;
     create(msg, func, opts);
   };
 
   var alert = function(msg, opts) {
     opts = opts || {};
-    opts.cancel   = opts.cancel  || "Cancel";
+    opts.cancel   = opts.cancel  || MSG.cancel;
     create(msg, null, opts);
   };
 
   var create = function(msg, func, opts) {
     var msghtml
-      = '<div class="dialog">'
-      + '<div class="msg">'
-      +   '<h3 class="msgh"></h3>'
-      +   '<div class="msgb"></div>'
-      +   '<table class="msgf">'
+      = '<div class="dialog modal msg">'
+      +   '<h3 class="header"></h3>'
+      +   '<div class="body"></div>'
+      +   '<table class="footer">'
       +   (opts.confirm
              ? '<tr class="col2"><td class="msgcancel">' + opts.cancel + '</td><td class="msgconfirm">' + opts.confirm + '</td></tr>'
              : '<tr class="col1"><td class="msgcancel">' + opts.cancel + '</td></tr>'
           )
       +   '</table>'
-      + '</div>'
-      + '<div class="mask"></div>'
       + '</div>';
 
     var $msgbox = $(msghtml);
 
     $(document.body).append($msgbox);
 
-    var   $title    = $(".msgh", $msgbox)
-        , $body     = $(".msgb", $msgbox)
+    var   $title    = $(".header",  $msgbox)
+        , $body     = $(".body",    $msgbox)
         , $cancel   = $(".msgcancel", $msgbox)
         , $confirm  = $(".msgconfirm", $msgbox);
 
-    $title.html(opts.title || "MESSAGE");
+    $title.html(opts.title || MSG.title);
     $body.html(msg);
 
     destory = function() {
+      $("#lottery").show();
       $msgbox.remove();
     };
 
@@ -434,6 +460,7 @@ var Msg = (function() {
       destory();
     });
 
+    $("#lottery").hide();
     $msgbox.show();
   };
 

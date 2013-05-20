@@ -1,3 +1,13 @@
+
+/* Smartphones (portrait and landscape) ----------- */
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+  .lot-ui td,
+  .lot-ui th,
+  .lot-ui .tree a {
+    font-size: 8px;
+  }
+}
+
 .lot-ui { 
   background: #ddd;
   font: 14px/1.4 Georgia, Serif;
@@ -19,7 +29,7 @@
   border: medium none;
   display: block;
   font-size: 18px;
-  margin: 20px 0;
+  margin: 10px 0;
   padding: 10px 0;
   width: 100%;
 }
@@ -36,38 +46,39 @@
   display: none;
 }
 
-/* 
-Max width before this PARTICULAR table gets nasty
-This query will take effect for any screen smaller than 760px
-and also iPads specifically.
-*/
-@media 
-only screen and (max-width: 760px),
-(min-device-width: 768px) and (max-device-width: 1024px)  {
-
+/*font*/
+.lot-ui [class^="icon-"]:before {
+  font-family: "fontello";
+  font-size: 32px;
+  left: 10px;
+  line-height: 62px;
+  position: absolute;
+  text-align: center;
+  top: -10px;
 }
 
-/* Smartphones (portrait and landscape) ----------- */
-@media only screen
-and (min-device-width : 320px)
-and (max-device-width : 480px) {
-  .lot-ui { 
-    padding: 0; 
-    margin: 0; 
-    width: 320px;
-  }
-  .lot-ui td,
-  .lot-ui th,
-  .lot-ui .tree a {
-    font-size: 50%;
-  }
+.lot-ui [class^="icon-"] {
+  background-color: transparent;
+  color: #A7A7A7;
+  display: inline-block;
+  font-family: Helvetica,Arial,sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  height: 60px;
+  line-height: 100px;
+  margin: 0 4px;
+  min-width: 50px;
+  padding: 0;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
 }
 
-/* iPads (portrait and landscape) ----------- */
-@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
-  body { 
-    width: 495px; 
-  }
+.lot-ui [class^="icon-"]:active, 
+.lot-ui [class^="icon-"]:focus, 
+.lot-ui [class^="icon-"]:visited, 
+.lot-ui [class^="icon-"].selected {
+  color: #fff;
 }
 
 /* Loading */
@@ -117,7 +128,7 @@ and (max-device-width : 480px) {
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAMAAABHPGVmAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRFU6fW////7vtARwAAAAJ0Uk5T/wDltzBKAAABIklEQVR42uyaSxLDMAhD8f0v3UW76EwNRTI4cUZeO7zJByxBbGxYJoggme2f1Qixr9UFMSMpd4OYsRRBzoA4USohbpxCiB9oC+RPMgZs5MFHkPAWobebY0xuEvuELPXlLULeG9AUqkkGQToh3PF3SwglSWCIn3G0xjD3Gkr0IRBCiSIFsgDTK7jdhyx/IoggeQjnOCEI6ziTDtmWzGCyUlZDpqFsSa5fA5mHEkSQXsjoSpMmiJ+MlQUygFD6FyyQnP7NS8mWU+qnyyAhIYggDIQsMEB7kK2VC+3BJh+/A0KexFhvRRBBDoeMRBM9mmsUZHzV1GEkGUvzk0hM5iZB2fags5WaeoAnoyamghwOec6PGHv+W6FNMiy4GZP8HOvwEmAAX8gf6WEC3ZoAAAAASUVORK5CYII=");
   display: block;
   height: 100px;
-  margin: 100px auto 0;
+  margin: 0 auto;
   width: 100px;
 }
 
@@ -150,9 +161,15 @@ and (max-device-width : 480px) {
   background-color: #FF0;
 }
 
+.lot-ui .data .group td {
+  background-color: #333;
+  color: #fff;
+  font-weight: 700;
+  padding: 10px 12px;
+}
+
 #lottery {
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: visible;
   width: 100%;
 }
 
@@ -163,10 +180,14 @@ and (max-device-width : 480px) {
 
 #lottery > ul > li {
   float: left;
-  margin: 0 0 70px;
+  /*for take place*/
+  margin: 0 0 1px; 
   padding: 0;
   width: 100%;
-  overflow: hidden;
+}
+
+#lottery > .header + ul {
+  margin-top: 44px;
 }
 
 #lottery .footer {
@@ -181,17 +202,21 @@ and (max-device-width : 480px) {
 /* Only show select slide */
 #lottery > ul > li > * {
   display: none;
+  margin-bottom: 80px;
 }
 
 /*dialog innner the slider should mask others*/
 #lottery > ul > li .dialog {
   background-color: #ddd;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: visible;
 }
 
-#lottery > ul > li .hasfooter {
-  margin-bottom: 70px;
+/*
+If the lottery has header,
+Shift the dialog to override the footer and and add more space to footer.
+*/
+#lottery > .header + ul > li .dialog {
+  margin-top: -44px;
 }
 
 #lottery > ul > li.selected > * {
@@ -213,11 +238,11 @@ and (max-device-width : 480px) {
   background-color: #000;
   bottom: 0;
   height: 64px;
+  left: 0;
   padding: 3px 0 0;
   position: fixed;
   text-align: center;
   width: 102%;
-  left: -4px;
   z-index: 900;
 }
 
@@ -228,59 +253,33 @@ and (max-device-width : 480px) {
 }
 */
 
-.lot-ui .footer .icon:before {
-  font-size: 48px;
-  left: 10px;
-  line-height: 62px;
-  position: absolute;
-  text-align: center;
-  top: -10px;
-}
-
-.lot-ui .footer .icon {
-  background-color: transparent;
-  color: #A7A7A7;
-  display: inline-block;
-  font-family: Helvetica,Arial,sans-serif;
-  font-size: 12px;
-  font-weight: bold;
-  height: 60px;
-  line-height: 100px;
-  margin: 0 4px;
-  overflow: hidden;
-  padding: 0;
-  position: relative;
-  text-align: center;
-  text-decoration: none;
-  width: 62px;
-}
-
-.lot-ui .footer .icon:active, 
-.lot-ui .footer .icon:focus, 
-.lot-ui .footer .icon:active:focus, 
-.lot-ui .footer .icon.selected {
-  color: #fff;
-}
-
 .lot-ui .header {
   bottom: auto;
-  color: #FFFFFF;
-  height: 32px;
-  padding-top: 8px;
+  color: #FFF;
+  height: 38px;
+  overflow: hidden;
   top: 0;
 }
 
 .lot-ui .header a {
-  color: #ddd;
+  color: #DDDDDD;
+  line-height: 62px;
   text-decoration: none;
+  width: auto;
 }
 
-.lot-ui .header a.icon:before {
-  font-size: 32px;
-  top: 6px;
+/*font override*/
+.lot-ui .header a[class^="icon-"] {
+  font-size: 10px;
 }
 
-.lot-ui .header a.selected {
+.lot-ui .header a[class^="icon-"]:before {
+  font-size: 24px;
+  left: 14px;
+  line-height: 42px;
+}
+
+.lot-ui .header a.selected{
   color: #ff0;
 }
 
@@ -295,12 +294,13 @@ and (max-device-width : 480px) {
 
 /*header in the slider*/
 .lot-ui #lottery > ul .header {
-  background-color: #333;
-  color: #fff;
+  background-color: #333333;
+  color: #FFFFFF;
   font-size: 18px;
   font-weight: 700;
-  height: auto;
-  padding: 0.4em;
+  height: 36px;
+  overflow: hidden;
+  padding: 8px 0;
   position: static;
   text-align: center;
   width: auto;
@@ -336,17 +336,6 @@ and (max-device-width : 480px) {
   width: 94%;
 }
 
-.lot-ui .body {
-  margin: 40px 0 70px;
-  overflow: hidden;
-}
-
-.lot-ui .bodyb {
-  margin: 40px 0 0;
-  overflow: hidden;
-}
-
-
 .lot-ui .mulsel li {
   border-top: 1px dashed #333;
   color: #000000;
@@ -374,58 +363,60 @@ and (max-device-width : 480px) {
 }
 
 .lot-ui .dialog {
-  position: fixed;
+  position: relative;
   left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
   z-index: 1000;
+  right: 0;
 }
 
 .lot-ui #lot-loading {
   background-color: transparent;
-}
-
-.lot-ui .msg {
-  background: none repeat scroll 0 0 #FFFFFF;
-  border: 1px solid #FFFFFF;
   bottom: 0;
-  left: 0;
-  padding: 1px;
+  padding-top: 100px;
   position: fixed;
-  right: 0;
   top: 0;
-  z-index: 1100;
 }
 
-.lot-ui .msg > h3 {
-  background: none repeat scroll 0 0 #000000;
-  color: #FFFFFF;
-  padding: 10px;
-  text-align: center;
-}
-
-.lot-ui .msg .msgb {
+/*dialog modal mode: means dialog outside the lottery*/
+/*modal mode must have header and footer*/
+.lot-ui .modal .body {
+  color: #000;
+  margin: 42px 0 50px;
   min-height: 60px;
 }
 
-.lot-ui .msg .msgf {
-  border: medium none;
-  bottom: 0;
-  left: 0;
-  position: fixed;
-  right: 0;
-  width: 100%;
+.lot-ui .modal .footer {
+  background-color: #fff;
+  padding: 0;
 }
 
-.lot-ui .msg .msgf td {
-  background: none repeat scroll 0 0 #000000;
-  border: 1px solid #000000;
-  color: #FFFFFF;
+.lot-ui .modal .footer td {
+  background: none repeat scroll 0 0 #000;
+  border: 1px solid #000;
+  color: #fff;
   font-weight: 700;
   margin: 0;
   padding: 12px 0;
   text-align: center;
+}
+
+.lot-ui .msg .body {
+  font-size: 32px;
+  padding: 30px 0;
+  text-align: center;
+}
+
+.lot-ui .msg .header{
+  font-size: 18px;
+}
+
+.lot-ui .msg .footer td{
+  font-size: 24px;
+}
+
+.lot-ui .menubar > li {
+  border: 2px solid #fff;
+  border-bottom: none;
 }
 
 .lot-ui .menubar > li > a {
@@ -450,7 +441,7 @@ and (max-device-width : 480px) {
 }
 
 .lot-ui .tree {
-
+  border: 2px solid #fff;
 }
 
 .lot-ui .tree li {
@@ -487,13 +478,28 @@ and (max-device-width : 480px) {
   text-decoration: none;
 }
 
-.lot-ui .tree .icon {
-  color: #fff;
+.lot-ui .tree [class^="icon-"]:before {
+  float: right;
+  font-size: 18px;
+  line-height: 18px;
+  position: static;
+}
+
+.lot-ui .tree [class^="icon-"] {
+  color: #FFFFFF;
   cursor: pointer;
   display: block;
   float: right;
-  line-height: 32px;
-  margin: -32px 0 0;
+  height: auto;
+  margin: -28px 12px 0;
   padding-left: 16px;
   width: 40px;
+}
+
+.lot-ui .note {
+  border: 1px dashed #333;
+  color: #333;
+  list-style: disc outside none;
+  margin: 20px 0;
+  padding: 1em 1em 1em 24px;
 }
